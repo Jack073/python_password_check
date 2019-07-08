@@ -24,6 +24,7 @@ def check_basics(password):
     sc = 0
     p_length = 0
     detectpwned = 0
+    detectpwned_different_case = 0
     # start scoring
     print("Password complexity:")
     for x in password:
@@ -63,15 +64,22 @@ def check_basics(password):
         print("NCSC recommened not having a short password: https://www.ncsc.gov.uk/collection/passwords/updating-your-approach")
 
     # check pwned passwords
-    f = open("PwnedPasswordTop100k.txt","r")
+    f = open("PwnedPasswordTop100k.txt","r", encoding = "UTF-8")
     for x in f:
         x = str(x)
         x = x.strip()
+        x = x.strip("\n")
+        # case sensitive check
         if x == password:
             print("Password is in top 100,000 pwned passwords")
             detectpwned = 1
-    if detectpwned == 0:
+        # case insensitive check
+        elif x.lower() == password.lower():
+            detectpwned_different_case = 1
+    if detectpwned == 0 and detectpwned_different_case == 0:
             print("Password not detected in top 100,000 pwned passwords")
+    elif detectpwned_different_case == 1:
+            print("Password is in top 100,000 pwned passwords but in a different case")
     print("The list of top 100,000 pwned passwords available at: https://www.ncsc.gov.uk/static-assets/documents/PwnedPasswordTop100k.txt")
     print("Read more on the top pwned passwords at: https://www.ncsc.gov.uk/blog-post/passwords-passwords-everywhere")
     return()
